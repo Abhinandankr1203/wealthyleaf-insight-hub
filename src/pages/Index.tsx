@@ -1,5 +1,3 @@
-// Update this page (the content is just a fallback if you fail to update the page)
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,42 +9,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { 
   TrendingUp, 
   TrendingDown, 
   DollarSign, 
-  PiggyBank, 
   Target, 
   BarChart3, 
-  PieChart, 
-  LineChart,
+  PieChart,
   Plus,
   Minus,
   Eye,
   Settings,
   Bell,
-  Search,
-  Filter,
-  Download,
-  Share2,
-  MoreHorizontal,
-  Calendar,
-  Clock,
-  Users,
-  CreditCard,
-  Wallet,
-  Building,
-  Globe,
-  Shield,
-  Zap,
-  Star,
   CheckCircle,
   AlertCircle,
-  Info,
   Leaf
 } from "lucide-react";
-import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, BarChart, Bar } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell } from "recharts";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -182,7 +161,7 @@ const Index = () => {
               </div>
               <div className="mt-4">
                 <ResponsiveContainer width="100%" height={100}>
-                  <RechartsLineChart data={portfolioData}>
+                  <LineChart data={portfolioData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
@@ -194,7 +173,7 @@ const Index = () => {
                       strokeWidth={2}
                       dot={false}
                     />
-                  </RechartsLineChart>
+                  </LineChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
@@ -265,14 +244,9 @@ const Index = () => {
               {/* Asset Allocation */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span className="flex items-center space-x-2">
-                      <PieChart className="w-5 h-5 text-purple-500" />
-                      <span>Asset Allocation</span>
-                    </span>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
+                  <CardTitle className="flex items-center space-x-2">
+                    <PieChart className="w-5 h-5 text-purple-500" />
+                    <span>Asset Allocation</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -318,14 +292,9 @@ const Index = () => {
               {/* Recent Transactions */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span className="flex items-center space-x-2">
-                      <DollarSign className="w-5 h-5 text-green-500" />
-                      <span>Recent Transactions</span>
-                    </span>
-                    <Button variant="ghost" size="sm">
-                      View All
-                    </Button>
+                  <CardTitle className="flex items-center space-x-2">
+                    <DollarSign className="w-5 h-5 text-green-500" />
+                    <span>Recent Transactions</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -372,7 +341,7 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <RechartsLineChart data={portfolioData}>
+                    <LineChart data={portfolioData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis />
@@ -384,7 +353,7 @@ const Index = () => {
                         strokeWidth={3}
                         dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
                       />
-                    </RechartsLineChart>
+                    </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
@@ -652,4 +621,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Index; 
