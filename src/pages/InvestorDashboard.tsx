@@ -23,9 +23,11 @@ import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 import { useAuth } from "../context/AuthContext";
 import { mutualFundApi, portfolioApi, mockPortfolio, mockSIPs, PortfolioHolding, SIP } from "../services/mutualFundApi";
 import DashboardNav from "../components/dashboard/DashboardNav";
+import { useToast } from "@/components/ui/use-toast";
 
 const InvestorDashboard = () => {
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   const [portfolio, setPortfolio] = useState<PortfolioHolding[]>([]);
   const [sips, setSips] = useState<SIP[]>([]);
@@ -122,6 +124,29 @@ const InvestorDashboard = () => {
 
   const formatPercentage = (value: number) => {
     return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+  };
+
+  const handleBuyFund = () => {
+    toast({
+      title: "Fund Purchase Successful",
+      description: "Your order to buy the fund has been placed.",
+      variant: "default",
+    });
+    setShowBuyFund(false);
+  };
+
+  const handleDownload = () => {
+    toast({
+      title: "Download Started",
+      description: "Your document is being downloaded.",
+    });
+  };
+
+  const handleSaveChanges = () => {
+    toast({
+      title: "Settings Saved",
+      description: "Your changes have been saved successfully.",
+    });
   };
 
   if (isLoading) {
@@ -258,7 +283,7 @@ const InvestorDashboard = () => {
                           className="bg-slate-700 border-slate-600 text-white"
                         />
                       </div>
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={handleBuyFund}>
                         Invest Now
                       </Button>
                     </div>
@@ -329,7 +354,7 @@ const InvestorDashboard = () => {
                   </DialogContent>
                 </Dialog>
 
-                <Button variant="outline" className="w-full border-slate-600 text-white hover:bg-slate-700" size="sm">
+                <Button variant="outline" className="w-full border-slate-600 text-white hover:bg-slate-700" size="sm" onClick={handleDownload}>
                   <Download className="w-4 h-4 mr-2" />
                   Download Report
                 </Button>
@@ -490,9 +515,14 @@ const InvestorDashboard = () => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Button variant="outline" size="sm" className="border-slate-600 text-white hover:bg-slate-700">
-                            <Eye className="w-4 h-4" />
-                          </Button>
+                          <div className="flex items-center space-x-2">
+                            <Button variant="ghost" size="sm" className="text-white hover:bg-slate-700" onClick={() => toast({ title: "Viewing details..."})}>
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-white hover:bg-slate-700" onClick={handleDownload}>
+                              <Download className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -772,57 +802,59 @@ const InvestorDashboard = () => {
 
           {/* Settings Tab */}
           <TabsContent value="settings" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white">Account Settings</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="name" className="text-slate-300">Full Name</Label>
-                      <Input id="name" defaultValue={user?.name} className="bg-slate-700 border-slate-600 text-white" />
-                    </div>
-                    <div>
-                      <Label htmlFor="email" className="text-slate-300">Email</Label>
-                      <Input id="email" type="email" defaultValue={user?.email} className="bg-slate-700 border-slate-600 text-white" />
-                    </div>
-                    <Button className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+            <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white">Profile & Settings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="name" className="text-slate-300">Full Name</Label>
+                    <Input id="name" defaultValue={user?.name} className="bg-slate-700 border-slate-600 text-white" />
                   </div>
-                </CardContent>
-              </Card>
+                  <div>
+                    <Label htmlFor="email" className="text-slate-300">Email</Label>
+                    <Input id="email" type="email" defaultValue={user?.email} className="bg-slate-700 border-slate-600 text-white" />
+                  </div>
+                  <div className="flex justify-end pt-4">
+                    <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleSaveChanges}>
+                      Save Changes
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white">Notification Preferences</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="email-notifications" className="text-slate-300">Email Notifications</Label>
-                        <p className="text-sm text-slate-400">Receive updates via email</p>
-                      </div>
-                      <Switch id="email-notifications" defaultChecked />
+            <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white">Notification Preferences</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="email-notifications" className="text-slate-300">Email Notifications</Label>
+                      <p className="text-sm text-slate-400">Receive updates via email</p>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="sms-notifications" className="text-slate-300">SMS Notifications</Label>
-                        <p className="text-sm text-slate-400">Receive updates via SMS</p>
-                      </div>
-                      <Switch id="sms-notifications" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="push-notifications" className="text-slate-300">Push Notifications</Label>
-                        <p className="text-sm text-slate-400">Receive updates in browser</p>
-                      </div>
-                      <Switch id="push-notifications" defaultChecked />
-                    </div>
+                    <Switch id="email-notifications" defaultChecked />
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="sms-notifications" className="text-slate-300">SMS Notifications</Label>
+                      <p className="text-sm text-slate-400">Receive updates via SMS</p>
+                    </div>
+                    <Switch id="sms-notifications" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="push-notifications" className="text-slate-300">Push Notifications</Label>
+                      <p className="text-sm text-slate-400">Receive updates in browser</p>
+                    </div>
+                    <Switch id="push-notifications" defaultChecked />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

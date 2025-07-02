@@ -15,9 +15,11 @@ import {
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, BarChart as RechartsBarChart, Bar } from "recharts";
 import { useAuth } from "../context/AuthContext";
 import DashboardNav from "../components/dashboard/DashboardNav";
+import { useToast } from "@/components/ui/use-toast";
 
 const SubBrokerDashboard = () => {
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   const [notifications, setNotifications] = useState(2);
   const [showAddClient, setShowAddClient] = useState(false);
@@ -73,6 +75,19 @@ const SubBrokerDashboard = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const handleAction = (title: string, description: string) => {
+    toast({ title, description });
+  };
+
+  const handleAddClient = () => {
+    handleAction("Client Added", "New client has been successfully onboarded.");
+    setShowAddClient(false);
+  };
+
+  const handleSaveChanges = () => {
+    handleAction("Settings Saved", "Your profile settings have been updated.");
   };
 
   return (
@@ -211,13 +226,13 @@ const SubBrokerDashboard = () => {
                   <Button onClick={() => setShowAddClient(true)} className="bg-emerald-600 hover:bg-emerald-700 text-white">
                     <UserPlus className="w-4 h-4 mr-2" />Add Client
                   </Button>
-                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-700">
+                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-700" onClick={() => handleAction("Viewing Reports", "Generating client reports.")}>
                     <FileText className="w-4 h-4 mr-2" />View Reports
                   </Button>
-                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-700">
+                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-700" onClick={() => handleAction("Downloading Statements", "Client statements are being prepared for download.")}>
                     <Download className="w-4 h-4 mr-2" />Download Statements
                   </Button>
-                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-700">
+                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-700" onClick={() => setActiveTab("support")}>
                     <MessageCircle className="w-4 h-4 mr-2" />Request Support
                   </Button>
                 </div>
@@ -293,8 +308,14 @@ const SubBrokerDashboard = () => {
           <TabsContent value="commissions" className="space-y-6">
             <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white">Commission Earnings</CardTitle>
-                <CardDescription className="text-slate-300">Monthly commission trends</CardDescription>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white">Commission Details</CardTitle>
+                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-700" onClick={() => handleAction("Download Statement", "Commission statement is being generated.")}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Statement
+                  </Button>
+                </div>
+                <CardDescription className="text-slate-300">Your commission earnings over time</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={250}>
@@ -306,11 +327,6 @@ const SubBrokerDashboard = () => {
                     <Bar dataKey="commission" fill="#F59E0B" />
                   </RechartsBarChart>
                 </ResponsiveContainer>
-                <div className="flex justify-end mt-4">
-                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-700">
-                    <Download className="w-4 h-4 mr-2" />Download Statement
-                  </Button>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -319,8 +335,14 @@ const SubBrokerDashboard = () => {
           <TabsContent value="support" className="space-y-6">
             <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white">Support Tickets</CardTitle>
-                <CardDescription className="text-slate-300">Recent support requests</CardDescription>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white">Support Center</CardTitle>
+                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => handleAction("New Request Raised", "Your support request has been submitted.")}>
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Raise New Request
+                  </Button>
+                </div>
+                <CardDescription className="text-slate-300">View and manage your support tickets</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -336,11 +358,6 @@ const SubBrokerDashboard = () => {
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-end mt-4">
-                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                    <MessageCircle className="w-4 h-4 mr-2" />Raise New Request
-                  </Button>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -350,7 +367,7 @@ const SubBrokerDashboard = () => {
             <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-white">Profile Settings</CardTitle>
-                <CardDescription className="text-slate-300">Manage your profile and notifications</CardDescription>
+                <CardDescription className="text-slate-300">Update your account information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -373,7 +390,9 @@ const SubBrokerDashboard = () => {
                   </div>
                 </div>
                 <div className="flex justify-end pt-4">
-                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">Save Changes</Button>
+                  <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={handleSaveChanges}>
+                    Save Changes
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -387,7 +406,7 @@ const SubBrokerDashboard = () => {
           <DialogHeader>
             <DialogTitle>Add New Client</DialogTitle>
             <DialogDescription className="text-slate-400">
-              Enter client details to onboard a new investor.
+              Onboard a new client by providing their details.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -399,7 +418,7 @@ const SubBrokerDashboard = () => {
               <Button variant="outline" onClick={() => setShowAddClient(false)} className="border-slate-600 text-white hover:bg-slate-700">
                 Cancel
               </Button>
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleAddClient}>
                 Add Client
               </Button>
             </div>
