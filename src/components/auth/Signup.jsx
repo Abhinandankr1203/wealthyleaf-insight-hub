@@ -74,25 +74,11 @@ export default function Signup() {
       alignItems="center"
       justifyContent="center"
       sx={{
-        background: 'linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%)',
+        background: 'linear-gradient(135deg, #0f172a 0%, #0e7490 50%, #6366f1 100%)',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Decorative Accent */}
-      <Box
-        sx={{
-          position: 'absolute',
-          width: 300,
-          height: 300,
-          bgcolor: 'secondary.light',
-          opacity: 0.13,
-          borderRadius: '50%',
-          top: -80,
-          left: -80,
-          zIndex: 0,
-        }}
-      />
       <Paper
         elevation={10}
         sx={{
@@ -107,14 +93,15 @@ export default function Signup() {
         }}
       >
         <Stack alignItems="center" spacing={2} mb={3}>
+          <img src="/logo.svg" alt="Wealthyleaf Logo" style={{ width: 48, height: 48, marginBottom: 4 }} />
           <Avatar sx={{ bgcolor: 'secondary.main', width: 64, height: 64, boxShadow: 3 }}>
             <PersonAddAlt1Icon fontSize="large" />
           </Avatar>
           <Typography variant="h4" fontWeight={800} color="secondary.main">
-            Create Account
+            Wealthyleaf
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" fontWeight={500}>
-            Join WealthyLeaf today!
+            Join Wealthyleaf today!
           </Typography>
         </Stack>
         <form onSubmit={handleSignup}>
@@ -176,6 +163,7 @@ export default function Signup() {
           onClick={handleGoogleSignup}
           variant="outlined"
           fullWidth
+          aria-label="Continue with Google"
           startIcon={
             <img
               src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
@@ -200,18 +188,17 @@ export default function Signup() {
               borderColor: 'secondary.main',
             },
           }}
-          disabled={!!success}
         >
-          Sign Up with Google
+          CONTINUE WITH GOOGLE
         </Button>
-        {success && (
-          <Typography color="success.main" align="center" mt={2}>
-            {success}
+        {error && (
+          <Typography color="error" align="center" mt={2} role="alert">
+            {error}
           </Typography>
         )}
-        {error && (
-          <Typography color="error" align="center" mt={2}>
-            {error}
+        {success && (
+          <Typography color="success.main" align="center" mt={2} role="alert">
+            {success}
           </Typography>
         )}
         <Box mt={3} textAlign="center">
@@ -220,7 +207,7 @@ export default function Signup() {
             <a
               href="/login"
               style={{
-                color: '#9c27b0',
+                color: '#1976d2',
                 fontWeight: 700,
                 textDecoration: 'none',
               }}

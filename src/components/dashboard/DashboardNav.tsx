@@ -87,14 +87,36 @@ const DashboardNav = ({ userRole, notifications = 0 }: DashboardNavProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <div className={`w-8 h-8 ${config.color} rounded-lg flex items-center justify-center`}>
-              <Leaf className="w-5 h-5 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white">WealthyLeaf</h1>
+            <img src="/logo.svg" alt="Wealthyleaf Logo" className="w-8 h-8" />
+            <h1 className="text-2xl font-bold text-white">Wealthyleaf</h1>
           </div>
           <Badge variant="secondary" className={config.badgeColor}>
             {config.title}
           </Badge>
+          {/* Report Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="text-white hover:bg-slate-700">
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Report
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-slate-800 border-slate-700 text-white">
+              <DropdownMenuLabel>Report Pages</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/portfolio-valuation')} className="hover:bg-slate-700">Portfolio Valuation</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/portfolio-summary')} className="hover:bg-slate-700">Portfolio Summary</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/asset-allocation')} className="hover:bg-slate-700">Asset Allocation</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/capital-gain-realized')} className="hover:bg-slate-700">Capital Gain Realized</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/capital-gain-unrealized')} className="hover:bg-slate-700">Capital Gain Unrealized</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/profit-loss')} className="hover:bg-slate-700">Profit & Loss</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/portfolio-performance')} className="hover:bg-slate-700">Portfolio Performance</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/investment-journey')} className="hover:bg-slate-700">Investment Journey</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/portfolio-rebalancing')} className="hover:bg-slate-700">Portfolio Rebalancing</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/portfolio-snapshot')} className="hover:bg-slate-700">Portfolio Snapshot</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/dashboard/report/transaction-report')} className="hover:bg-slate-700">Transaction Report</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         
         <div className="flex items-center space-x-4">

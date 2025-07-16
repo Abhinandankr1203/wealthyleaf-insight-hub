@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, PieLabelRenderProps } from "recharts";
 import { MoreHorizontal, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 
 interface Asset {
@@ -61,6 +61,33 @@ const AssetAllocation = ({
     return null;
   };
 
+  const renderCustomLabel = ({
+    cx, cy, midAngle, innerRadius, outerRadius, percent, name,
+  }: PieLabelRenderProps & { name: string }) => {
+    const RADIAN = Math.PI / 180;
+    const nCx = Number(cx);
+    const nCy = Number(cy);
+    const nInner = Number(innerRadius);
+    const nOuter = Number(outerRadius);
+    const radius = nInner + (nOuter - nInner) * 1.2;
+    const x = nCx + radius * Math.cos(-midAngle * RADIAN);
+    const y = nCy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="#222"
+        textAnchor={x > nCx ? 'start' : 'end'}
+        dominantBaseline="central"
+        fontSize={14}
+        fontWeight={600}
+      >
+        {`${name}: ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -78,7 +105,7 @@ const AssetAllocation = ({
       <CardContent>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex justify-center">
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
                   data={assets}
@@ -89,6 +116,8 @@ const AssetAllocation = ({
                   paddingAngle={5}
                   dataKey="value"
                   onClick={(data) => setSelectedAsset(data.name)}
+                  label={renderCustomLabel}
+                  labelLine={false}
                 >
                   {assets.map((asset, index) => (
                     <Cell 

@@ -16,6 +16,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Link, useLocation } from "react-router-dom";
+import { Home, FileText, TrendingUp, Layers, Shield, Book, Target, Folder, Users, File, BarChart2, PieChart, FilePlus, FileMinus, FileText as FileTextIcon, LogOut, User, Menu } from "lucide-react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -758,4 +760,100 @@ export {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
+}
+
+const iconMap = {
+  "Dashboard": <Home size={18} />, 
+  "Report": <FileText size={18} />, 
+  "Portfolio Valuation": <BarChart2 size={16} />,
+  "Portfolio Summary": <PieChart size={16} />,
+  "Asset Allocation": <Layers size={16} />,
+  "Capital Gain Realized": <TrendingUp size={16} />,
+  "Capital Gain Unrealized": <TrendingUp size={16} />,
+  "Profit & Loss": <FileMinus size={16} />,
+  "Portfolio Performance": <BarChart2 size={16} />,
+  "Investment Journey": <Book size={16} />,
+  "Portfolio Rebalancing": <PieChart size={16} />,
+  "Portfolio Snapshot": <FileTextIcon size={16} />,
+  "Transaction Report": <FileTextIcon size={16} />,
+  "Transactions Entry": <FileTextIcon size={18} />,
+  "Insurance": <Shield size={18} />,
+  "My SIP's": <Target size={18} />,
+  "My Folios": <Folder size={18} />,
+  "Goal Planner": <Target size={18} />,
+  "Invest Online NSE": <TrendingUp size={18} />,
+  "Invest Online MFU": <TrendingUp size={18} />,
+  "My Documents": <File size={18} />,
+  "Risk Profiling": <Users size={18} />,
+  "Watchlist": <Book size={18} />
+};
+
+export function AppSidebar({ items }) {
+  const location = useLocation();
+  const [openReport, setOpenReport] = React.useState(() => {
+    // Expand if current route matches any report subpage
+    const reportItem = items.find((item) => item.label === 'Report');
+    if (reportItem && reportItem.sub) {
+      return reportItem.sub.some((sub) => location.pathname === sub.path);
+    }
+    return false;
+  });
+  return (
+    <aside className="w-64 bg-gradient-to-b from-teal-700 via-teal-600 to-emerald-500 text-white flex flex-col py-4 px-2 min-h-screen">
+      <div className="flex items-center gap-2 text-2xl font-bold mb-8 pl-2">
+        <img src="/logo.svg" alt="Wealthyleaf Logo" className="h-8 w-8" />
+        Wealthyleaf
+      </div>
+      <nav className="flex-1">
+        <ul className="space-y-2">
+          {items.map((item) => (
+            <li key={item.label}>
+              {item.sub ? (
+                <>
+                  <button
+                    type="button"
+                    className={`w-full text-left font-semibold py-2 px-3 rounded hover:bg-teal-700 cursor-pointer block flex items-center gap-2 ${openReport ? "bg-teal-800 border-l-4 border-white" : ""}`}
+                    onClick={() => setOpenReport((prev) => !prev)}
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      {iconMap[item.label]}
+                      {item.label}
+                    </span>
+                    <span className="ml-auto">{openReport ? "▾" : "▸"}</span>
+                  </button>
+                  {openReport && (
+                    <ul className="ml-4 text-sm space-y-1">
+                      {item.sub.map((sub) => (
+                        <li key={sub.label}>
+                          <Link
+                            to={sub.path || "#"}
+                            className={`py-1 px-2 rounded hover:bg-teal-700 cursor-pointer block ${location.pathname === sub.path ? "bg-teal-800" : ""}`}
+                          >
+                            <span className="inline-flex items-center gap-2">
+                              {iconMap[sub.label]}
+                              {sub.label}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              ) : (
+                <Link
+                  to={item.path || "#"}
+                  className={`font-semibold py-2 px-3 rounded hover:bg-teal-700 cursor-pointer block ${location.pathname === item.path ? "bg-teal-800 border-l-4 border-white" : ""}`}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    {iconMap[item.label]}
+                    {item.label}
+                  </span>
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+  );
 }

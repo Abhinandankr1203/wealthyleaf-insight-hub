@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Add this import
-import { auth } from '../../firebase/config';
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import {
   TextField,
   Button,
@@ -11,32 +10,59 @@ import {
   Box,
   Avatar,
   Stack,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Alert,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Add this line
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard'); // Redirect to dashboard
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+    setError('');
+    setIsLoading(true);
 
-  const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
+    if (!email || !password || !role) {
+      setError('Please fill in all fields');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      await signInWithPopup(auth, provider);
-      navigate('/dashboard'); // Redirect to dashboard
+      const success = await login(email, password, role);
+      if (success) {
+        // Redirect based on role
+        switch (role) {
+          case 'investor':
+            navigate('/dashboard/investor');
+            break;
+          case 'sub-broker':
+            navigate('/dashboard/sub-broker');
+            break;
+          case 'admin':
+            navigate('/dashboard/admin');
+            break;
+          default:
+            navigate('/dashboard');
+        }
+      } else {
+        setError('Invalid credentials. Please check your email, password, and role.');
+      }
     } catch (err) {
-      setError(err.message);
+      setError('Login failed. Please try again.');
+      console.error('Login error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,17 +73,11 @@ export default function Login() {
       alignItems="center"
       justifyContent="center"
       sx={{
-        background: 'none', // Removed background color/gradient
+        background: 'linear-gradient(135deg, #0f172a 0%, #0e7490 50%, #6366f1 100%)',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Decorative Accent */}
-      <Box
-        sx={{
-          display: 'none', // Hide decorative accent as well
-        }}
-      />
       <Paper
         elevation={10}
         sx={{
@@ -72,16 +92,30 @@ export default function Login() {
         }}
       >
         <Stack alignItems="center" spacing={2} mb={3}>
+          <img src="/logo.svg" alt="Wealthyleaf Logo" style={{ width: 48, height: 48, marginBottom: 4 }} />
           <Avatar sx={{ bgcolor: 'primary.main', width: 64, height: 64, boxShadow: 3 }}>
             <LockOutlinedIcon fontSize="large" />
           </Avatar>
           <Typography variant="h4" fontWeight={800} color="primary.main">
-            WealthyLeaf
+            Wealthyleaf
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" fontWeight={500}>
             Secure Login Portal
           </Typography>
         </Stack>
+
+        {/* Demo Credentials Info */}
+        <Alert severity="info" sx={{ mb: 3 }}>
+          <Typography variant="body2" fontWeight={600}>
+            Demo Credentials:
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            <strong>Investor:</strong> investor@wealthyleaf.com / password123<br/>
+            <strong>Sub-Broker:</strong> broker@wealthyleaf.com / password123<br/>
+            <strong>Admin:</strong> admin@wealthyleaf.com / password123
+          </Typography>
+        </Alert>
+
         <form onSubmit={handleLogin}>
           <TextField
             label="Email"
@@ -105,11 +139,24 @@ export default function Login() {
             autoComplete="current-password"
             size="medium"
           />
+          <FormControl fullWidth margin="normal" required>
+            <InputLabel>Role</InputLabel>
+            <Select
+              value={role}
+              label="Role"
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <MenuItem value="investor">Investor</MenuItem>
+              <MenuItem value="sub-broker">Sub-Broker</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+            </Select>
+          </FormControl>
           <Button
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
+            disabled={isLoading}
             sx={{
               mt: 2,
               py: 1.2,
@@ -120,46 +167,16 @@ export default function Login() {
               boxShadow: 2,
             }}
           >
-            Login
+            {isLoading ? 'Logging in...' : 'Login'}
           </Button>
         </form>
-        <Divider sx={{ my: 3, fontWeight: 600 }}>or</Divider>
-        <Button
-          onClick={handleGoogleLogin}
-          variant="outlined"
-          fullWidth
-          startIcon={
-            <img
-              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-              alt="Google"
-              style={{ width: 22, height: 22 }}
-            />
-          }
-          sx={{
-            py: 1.2,
-            fontWeight: 700,
-            fontSize: { xs: '0.95rem', sm: '1.1rem' },
-            borderColor: '#bfc9d9',
-            color: '#22223b',
-            background: '#fff',
-            borderRadius: 2,
-            letterSpacing: 1,
-            whiteSpace: 'nowrap', // Prevents text wrapping
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            '&:hover': {
-              background: '#f3f6fd',
-              borderColor: 'primary.main',
-            },
-          }}
-        >
-          CONTINUE WITH GOOGLE
-        </Button>
+
         {error && (
-          <Typography color="error" align="center" mt={2}>
+          <Alert severity="error" sx={{ mt: 2 }} role="alert">
             {error}
-          </Typography>
+          </Alert>
         )}
+
         <Box mt={3} textAlign="center">
           <Typography variant="body2">
             Don't have an account?{' '}

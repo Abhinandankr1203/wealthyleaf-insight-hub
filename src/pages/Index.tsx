@@ -99,6 +99,7 @@ const Index = () => {
       }
     } catch (error) {
       setLoginError("Login failed. Please try again.");
+      console.error('Index page login error:', error);
     } finally {
       setIsLoggingIn(false);
     }
@@ -118,7 +119,7 @@ const Index = () => {
               <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
                 <Leaf className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-white">WealthyLeaf</h1>
+              <h1 className="text-2xl font-bold text-white">Wealthyleaf</h1>
             </div>
             <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30">
               Mutual Fund Platform
@@ -145,7 +146,7 @@ const Index = () => {
           </h1>
           <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
             Track your portfolio, manage SIPs, and get expert insights. Join thousands of investors 
-            who trust WealthyLeaf for their mutual fund journey.
+            who trust Wealthyleaf for their mutual fund journey.
           </p>
           
           {/* Key Features */}
@@ -261,7 +262,7 @@ const Index = () => {
                         </Button>
                         <div className="text-center text-xs text-slate-400">
                           <p>Demo credentials:</p>
-                          <p>Email: {role.id}@wealthyleaf.com</p>
+                          <p>Email: {role.id === 'sub-broker' ? 'broker@wealthyleaf.com' : `${role.id}@wealthyleaf.com`}</p>
                           <p>Password: password123</p>
                         </div>
                       </div>
@@ -304,7 +305,7 @@ const Index = () => {
             Ready to Start Your Investment Journey?
           </h2>
           <p className="text-slate-300 mb-6">
-            Join thousands of investors who trust WealthyLeaf for their mutual fund investments
+            Join thousands of investors who trust Wealthyleaf for their mutual fund investments
           </p>
           <Button size="lg" className="bg-green-600 hover:bg-green-700 text-lg px-8 py-3">
             Get Started Today
@@ -320,10 +321,10 @@ const Index = () => {
             <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center">
               <Leaf className="w-4 h-4 text-white" />
             </div>
-            <span className="text-white font-semibold">WealthyLeaf</span>
+            <span className="text-white font-semibold">Wealthyleaf</span>
           </div>
           <p className="text-slate-300">
-            © 2024 WealthyLeaf. All rights reserved. | 
+            © 2024 Wealthyleaf. All rights reserved. | 
             <a href="#" className="text-blue-400 hover:text-blue-300 ml-2">Privacy Policy</a> | 
             <a href="#" className="text-blue-400 hover:text-blue-300 ml-2">Terms of Service</a>
           </p>
